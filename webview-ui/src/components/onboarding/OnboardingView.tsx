@@ -303,7 +303,9 @@ const OnboardingViewContent = ({ onboardingModels }: { onboardingModels: Onboard
 					? "free_user_selected"
 					: "byok_user_selected"
 		// User selection is available in step 0 only
-		StateServiceClient.captureOnboardingProgress({ step: 0, action })
+		StateServiceClient.captureOnboardingProgress({ step: 0, action }).catch(() => {})
+		// Automatically advance to the matching config / model selection screen
+		setStepNumber(1)
 	}, [])
 
 	const onModelClick = useCallback((modelSelected: string) => {
