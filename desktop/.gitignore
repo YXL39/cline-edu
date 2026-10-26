@@ -1,0 +1,9 @@
+# 桌面端历史调试日志，勿提交
+*.log
+
+# 冒烟测试构建产物（目录名 out-smoke 不被根 .gitignore 的 `out` 规则覆盖）
+out-smoke/
+
+# node_modules/ 与 out/ 已被根 .gitignore 覆盖，此处显式列出以防根配置变更
+node_modules/
+out/
