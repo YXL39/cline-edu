@@ -39,8 +39,8 @@ https://hybridtalentcomputing.gitbook.io/cline-chinese-doc/
 | 定位 | 通用 AI 编程助手 | 中文教学增强（首个落地场景：小学数学学习助手） |
 | 引导流程 | 英文 Onboarding | 中文 Onboarding + 学习阶段引导 + 模拟按钮「复习 / 超前学」 |
 | 运行形态 | VSCode 插件 | VSCode 插件 **+ 新增 Electron 桌面版 ClineEdu Desktop**（托管 cline-core + 独立 webview） |
-| 数据目录 | `.cline/` | 桌面版使用独立目录 `.cline-chinese-edu/` |
-| 数据持久化 | 会话历史（SQLite） | 另含 PostgreSQL 学习库（edu schema 自动迁移） |
+| 数据目录 | `.cline/` | 扩展数据目录仍为 `.cline/`；学习数据在工作区内 `.cline-chinese-edu/`（JSON），桌面版"学生数据目录"可由对话框任意选择（注入核心为 CLINE_DIR） |
+| 数据持久化 | 会话历史（SQLite） | 工作区 `.cline-chinese-edu/` JSON 学习数据（profile/progress/mistake，v1→v2 自动迁移），由教育防护子 Agent 守护 |
 
 > 桌面版（ClineEdu Desktop）构建与运行步骤见下文「🖥️ 桌面版」章节。
 
