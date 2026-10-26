@@ -1,4 +1,4 @@
-# Cline-Chinese (Cline中文汉化版) 🌏
+# ClineEdu（基于 Cline-Chinese 的教育增强版）
 
 > 🎉 截止到2026.7.20，Cline Chinese在VS Code插件市场的下载量突破268k啦！感谢大家的支持！
 
@@ -30,8 +30,63 @@ https://hybridtalentcomputing.gitbook.io/cline-chinese-doc/
 <video width="100%" controls src="https://github.com/user-attachments/assets/a6db47a9-08d7-4d20-afa0-110d23b71a81"></video>
 
 
+## 与上游的关系及主要差异
+
+本项目基于 [Cline](https://github.com/cline/cline)（upstream）与 [Cline-Chinese](https://github.com/SSYCloud/cline-chinese)（fork）二次开发，与原版的主要差异：
+
+| 类别 | 原版 | 本项目（ClineEdu） |
+| --- | --- | --- |
+| 定位 | 通用 AI 编程助手 | 中文教学增强（首个落地场景：小学数学学习助手） |
+| 引导流程 | 英文 Onboarding | 中文 Onboarding + 学习阶段引导 + 模拟按钮「复习 / 超前学」 |
+| 运行形态 | VSCode 插件 | VSCode 插件 **+ 新增 Electron 桌面版 ClineEdu Desktop**（托管 cline-core + 独立 webview） |
+| 数据目录 | `.cline/` | 桌面版使用独立目录 `.cline-chinese-edu/` |
+| 数据持久化 | 会话历史（SQLite） | 另含 PostgreSQL 学习库（edu schema 自动迁移） |
+
+> 桌面版（ClineEdu Desktop）构建与运行步骤见下文「🖥️ 桌面版」章节。
+
 ## 安装使用
 Cline-Chinese已发布到VSCode插件市场，欢迎感兴趣的小伙伴们下载体验。
+
+## 🖥️ 桌面版（ClineEdu Desktop）
+
+基于 Electron 的独立桌面应用：托管 Cline 核心（standalone 版 `cline-core`）与独立构建的 webview，
+通过 gRPC（ProtoBus + HostBridge）完成通信，面向学生/课堂场景（数据目录 `.cline-chinese-edu`，中文引导流程）。
+
+### 目录结构
+- `desktop/` — Electron 主进程：HostBridge gRPC 服务、cline-core 子进程托管、ProtoBus 消息转发
+- `webview-ui/` — 前端（vite）。桌面版以 `PLATFORM=standalone` 构建，输出到 `webview-ui/build/`
+- `dist-standalone/` — cline-core 运行包（`cline-core.js` + 资源 + node_modules）
+- `src/generated/` — protoc 生成的 gRPC 代码（核心与桌面端共用）
+
+### 构建与运行
+```bash
+# 1. 安装依赖（各包目录分别执行）
+npm install
+cd webview-ui && npm install && cd ..
+cd desktop && npm install && cd ..
+
+# 2. 构建 cline-core（standalone 版 + 资源打包）
+node esbuild.mjs --standalone
+node scripts/package-standalone.mjs -s
+
+# 3. 构建桌面版 webview（PLATFORM=standalone，输出 webview-ui/build/）
+node desktop/scripts/build-webview.mjs
+
+# 4. 启动桌面应用（主进程经 esbuild 打包到 desktop/out/ 后拉起 Electron）
+cd desktop
+npm start
+```
+
+> 提示：`npm start` 只打包主进程（`node build.mjs`），**不会**重新构建 webview；
+> 修改 webview-ui 代码后需先执行第 3 步再启动。
+
+### 冒烟测试（不启动 Electron）
+```bash
+cd desktop
+npm run smoke
+```
+验证 HostBridge gRPC 服务、cline-core 子进程与 ProtoBus 全链路（需先完成第 2 步）。
+
 
 ## 简介
 
